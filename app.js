@@ -4,7 +4,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 
 //build out the sql connection
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
     host: "localhost",
   
     // Your port; if not 3306
@@ -24,3 +24,34 @@ var connection = mysql.createConnection({
     // run the start function after the connection is made to prompt the user
     start();
   });
+
+  function start() {
+    inquirer
+      .prompt({
+        name: "createEmployee",
+        type: "list",
+        message: "What would you like to do?",
+        choices: [
+            "View All Employees",
+            "View All Employees By Department",
+            "View All Employees By Manager",
+            "Add Employee",
+            "Remove Employee",
+            "Update Employee Role",
+            "Update Employee Manager",
+            "View All Roles",
+            "exit",
+        ],
+      })
+      .then(function(answer) {
+        // based on their answer, either call the bid or the post functions
+        if (answer.postOrBid === "POST") {
+          postAuction();
+        }
+        else if(answer.postOrBid === "BID") {
+          bidAuction();
+        } else{
+          connection.end();
+        }
+      });
+  }
