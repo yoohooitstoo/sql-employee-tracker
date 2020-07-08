@@ -21,7 +21,6 @@ CREATE TABLE role(
 --   SELECT * FROM employee
 --   RIGHT JOIN role on employee role_id = employee.role_id
 
-
 CREATE TABLE employee(
     id INT NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
