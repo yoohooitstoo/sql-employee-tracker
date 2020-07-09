@@ -28,9 +28,9 @@ const connection = mysql.createConnection({
 
     displaySign();
   });
+
 function displaySign() {
     const greeting = chalk.white.bold("EMPLOYEE TRACKER");
-    
     const boxenOptions = {
      padding: 1,
      margin: 1,
