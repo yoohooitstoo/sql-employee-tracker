@@ -3,6 +3,9 @@ const mysql = require("mysql");
 //require inquirer
 const inquirer = require("inquirer");
 
+const chalk = require("chalk");
+const boxen = require("boxen");
+
 //build out the sql connection
 const connection = mysql.createConnection({
     host: "localhost",
@@ -22,10 +25,28 @@ const connection = mysql.createConnection({
   connection.connect(function(err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-    start();
+
+    displaySign();
   });
+function displaySign() {
+    const greeting = chalk.white.bold("EMPLOYEE TRACKER");
+    
+    const boxenOptions = {
+     padding: 1,
+     margin: 1,
+     borderStyle: "round",
+     borderColor: "green",
+     backgroundColor: "#555555"
+    };
+    const msgBox = boxen( greeting, boxenOptions );
+    
+    console.log(msgBox);
+    start();
+};
+  
 
   function start() {
+    
     inquirer
       .prompt({
         name: "createEmployee",
@@ -45,13 +66,24 @@ const connection = mysql.createConnection({
       })
       .then(function(answer) {
         // based on their answer, either call the bid or the post functions
-        if (answer.postOrBid === "POST") {
-          postAuction();
-        }
-        else if(answer.postOrBid === "BID") {
-          bidAuction();
-        } else{
-          connection.end();
+        if(action === "View All Employees") {
+            viewEmployees();
+        } if (action === "View All Employees By Department") {
+            viewDepartment();
+        } if (action === "View Employees By Manager") {
+            viewManager();
+        } if (action === "Add Employee") {
+            addEmployee();
+        } if (action === "Remove Employee") {
+            removeEmployee();
+        } if (action === "Update Employee Role") {
+            updateRole();
+        } if (action === "Update Employee Manager") {
+            updateManager();
+        } if (action === "View All Roles") {
+            viewRoles();
+        } else {
+            exit();
         }
       });
-  }
+  };
