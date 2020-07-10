@@ -55,7 +55,7 @@ function start() {
         "View All Employees By Department",
         "View All Employees By Manager",
         "Add Employee",
-        "Add Manager",
+        "Add Role",
         "Add Department",
         "Remove Employee",
         "Update Employee Role",
@@ -74,8 +74,8 @@ function start() {
         viewManager();
       } else if (action === "Add Employee") {
         addEmployee();
-      } else if (action === "Add Manager") {
-        addManager();
+      } else if (action === "Add Role") {
+        addRole();
       } else if (action === "Add Department") {
         addDepartment();
       } else if (action === "Remove Employee") {
@@ -263,20 +263,20 @@ const updateRole = () => {
   });
 };
 
-const addManager = () => {
+const addRole = () => {
   inquirer
     .prompt([
       {
         type: "input",
-        message: "What is your new department's name?",
-        name: "department_name",
+        message: "What is the role you would like to add?",
+        name: "title",
       },
     ])
     .then((response) => {
       console.log(response);
-      connection.query("INSERT INTO department SET ?", response, (err, res) => {
+      connection.query("INSERT INTO role SET ?", response, (err) => {
         if (err) throw err;
-        connection.query("SELECT * FROM department", (err, res) => {
+        connection.query("SELECT * FROM role", (err, res) => {
           if (err) throw err;
           console.table(res);
           start();
