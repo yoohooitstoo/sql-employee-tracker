@@ -55,6 +55,8 @@ function start() {
         "View All Employees By Department",
         "View All Employees By Manager",
         "Add Employee",
+        "Add Manager",
+        "Add Department",
         "Remove Employee",
         "Update Employee Role",
         "Update Employee Manager",
@@ -73,9 +75,9 @@ function start() {
       } else if (action === "Add Employee") {
         addEmployee();
       } else if (action === "Add Manager") {
-        addEmployee();
+        addManager();
       } else if (action === "Add Department") {
-          addEmployee();
+        addDepartment();
       } else if (action === "Remove Employee") {
         removeEmployee();
       } else if (action === "Update Employee Role") {
@@ -144,47 +146,50 @@ const addEmployee = () => {
       const arrayOfManagers = data.map((managers) => {
         return { name: managers.first_name, value: managers.id };
       });
-    // console.log(arrayOfTitles);
-    inquirer
-      .prompt([
-        {
-          type: "input",
-          message: "What is your new employee's first name?",
-          name: "first_name",
-        },
-        {
-          type: "input",
-          message: "What is your new employee's last name?",
-          name: "last_name",
-        },
-        {
-          type: "list",
-          message: "Please select the employee's job role:",
-          choices: arrayOfTitles,
-          name: "role_id",
-        },
-        {
-          type: "list",
-          message: "Please select the employee's manager:",
-          choices: arrayOfManagers,
-          name: "manager_id",
-        },
-      ])
-      .then((response) => {
-        console.log(response);
-        connection.query("INSERT INTO employee SET ?", response, (err, res) => {
-          if (err) throw err;
-          connection.query("SELECT * FROM employee", (err, res) => {
-            if (err) throw err;
-            console.table(res);
-            start();
-          });    
+      // console.log(arrayOfTitles);
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            message: "What is your new employee's first name?",
+            name: "first_name",
+          },
+          {
+            type: "input",
+            message: "What is your new employee's last name?",
+            name: "last_name",
+          },
+          {
+            type: "list",
+            message: "Please select the employee's job role:",
+            choices: arrayOfTitles,
+            name: "role_id",
+          },
+          {
+            type: "list",
+            message: "Please select the employee's manager:",
+            choices: arrayOfManagers,
+            name: "manager_id",
+          },
+        ])
+        .then((response) => {
+          console.log(response);
+          connection.query(
+            "INSERT INTO employee SET ?",
+            response,
+            (err, res) => {
+              if (err) throw err;
+              connection.query("SELECT * FROM employee", (err, res) => {
+                if (err) throw err;
+                console.table(res);
+                start();
+              });
+            }
+          );
         });
-      });
     });
   });
 };
-
 
 const removeEmployee = () => {
   connection.query("SELECT * FROM employee", function (err, results) {
@@ -258,9 +263,48 @@ const updateRole = () => {
   });
 };
 
-const updateManager = () => {
-  console.log("here");
-  start();
+const addManager = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your new department's name?",
+        name: "department_name",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      connection.query("INSERT INTO department SET ?", response, (err, res) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM department", (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          start();
+        });
+      });
+    });
+};
+
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your new department's name",
+        name: "department_name",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      connection.query("INSERT INTO department SET ?", response, (err, res) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM department", (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          start();
+        });
+      });
+    });
 };
 
 const viewRoles = () => {
