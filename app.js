@@ -123,31 +123,45 @@ const addEmployee = () => {
   connection.query("SELECT * FROM role", (err, data) => {
     if (err) throw err;
     // console.log(data);
-    const arrayOfTitles = data.map((object) => object.title);
-    // console.log(arrayOfNames);
+    const arrayOfTitles = data.map((object) =>{ return {name: object.title , value: object.id} } );
+    console.log(arrayOfTitles);
     inquirer
       .prompt([
         {
           type: "input",
-          message: "What is your new employee's name?",
-          name: "employeeName",
+          message: "What is your new employee's first name?",
+          name: "first_name",
+        },
+        {
+          type: "input",
+          message: "What is your new employee's last name?",
+          name: "last_name",
         },
         {
           type: "list",
-          message: "Please select the employee's title:",
+          message: "Please select the employee's job role:",
           choices: arrayOfTitles,
-          name: "title",
+          name: "role_id",
         },
       ])
       .then((response) => {
         console.log(response);
-        const rankObject = data.filter(
-          (object) => object.name === response.title
-        );
-        console.log(rankObject);
+        connection.query("INSERT INTO employee SET ?", response, (err, res) => {
+          if (err) throw err;
+          connection.query("SELECT * FROM employee",(err, res) => {
+            if (err) throw err;
+            console.table(res);
+          })
+        })
+          
+        // const newEmployeeObject = response.filter(
+        //   (response) => newEmployeeObject.employeeFirstName === newEmployeeObject.title
+        // );
+        // console.log(newEmployeeObject);
+        
       });
-  });
-  start();
+    });
+  // start();
 };
 
 const removeEmployee = () => {
