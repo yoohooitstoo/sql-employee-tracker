@@ -120,12 +120,60 @@ const viewManager = () => {
 };
 
 const addEmployee = () => {
-  console.log("hi");
+  connection.query("SELECT * FROM role", (err, data) => {
+    if (err) throw err;
+    // console.log(data);
+    const arrayOfTitles = data.map((object) => object.title);
+    // console.log(arrayOfNames);
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What is your new employee's name?",
+          name: "employeeName",
+        },
+        {
+          type: "list",
+          message: "Please select the employee's title:",
+          choices: arrayOfTitles,
+          name: "title",
+        },
+      ])
+      .then((response) => {
+        console.log(response);
+        const rankObject = data.filter(
+          (object) => object.name === response.title
+        );
+        console.log(rankObject);
+      });
+  });
   start();
 };
 
 const removeEmployee = () => {
-  console.log("hey");
+  connection.query("SELECT * FROM employee", function(err, results){
+    if (err) throw err;
+  inquirer
+    .prompt({
+      name: "employee",
+      type: "list",
+      message: "Who would you like to remove?",
+      choices: function() {const choicesArray = [];
+        for (var i = 0; i < results.length; i++) {
+          choicesArray.push(results[i].first_name);
+        }
+        return choicesArray;
+      }
+    })
+  // Functionality works need to actually delete
+    .then(function (answer) {
+      const query = "DELETE * FROM employee WHERE employee.first_name = ?";
+      connection.query( query, {employee: answer.employee}, function(err, results){
+      console.table(results);
+      console.log(answer);
+      });
+      });
+  })
   start();
 };
 
