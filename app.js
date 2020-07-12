@@ -62,7 +62,6 @@ function start() {
         "Remove Role",
         "Remove Department",
         "Update Employee Role",
-        "Update Employee Manager",
         "exit",
       ],
     })
@@ -88,8 +87,6 @@ function start() {
         removeDepartment();
       } else if (action === "Update Employee Role") {
         updateRole();
-      } else if (action === "Update Employee Manager") {
-        updateManager();
       } else if (action === "View All Roles") {
         viewRoles();
       } else {
@@ -430,3 +427,4 @@ const exit = () => {
   console.log("you exited");
   connection.end();
 };
+
