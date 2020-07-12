@@ -54,13 +54,15 @@ function start() {
         "View All Employees",
         "View All Employees By Department",
         "View All Employees By Manager",
+        "View All Roles",
         "Add Employee",
         "Add Role",
         "Add Department",
         "Remove Employee",
+        "Remove Role",
+        "Remove Department",
         "Update Employee Role",
         "Update Employee Manager",
-        "View All Roles",
         "exit",
       ],
     })
@@ -80,6 +82,10 @@ function start() {
         addDepartment();
       } else if (action === "Remove Employee") {
         removeEmployee();
+      } else if (action === "Remove Role") {
+        removeRole();
+      } else if (action === "Remove Department") {
+        removeDepartment();
       } else if (action === "Update Employee Role") {
         updateRole();
       } else if (action === "Update Employee Manager") {
@@ -227,41 +233,74 @@ const removeEmployee = () => {
   });
 };
 
+
+
 const updateRole = () => {
-  connection.query("SELECT * FROM employee", function (err, results) {
+  connection.query("SELECT * FROM role", (err, data) => {
     if (err) throw err;
-    inquirer
-      .prompt({
-        name: "employee",
-        type: "list",
-        message: "Who's role would you like to change?",
-        choices: function () {
-          const choicesArray = [];
-          for (var i = 0; i < results.length; i++) {
-            const employeeObject = {
-              name: `${results[i].first_name} ${results[i].last_name}`,
-              value: results[i].id,
-            };
-            choicesArray.push(employeeObject);
-          }
-          return choicesArray;
-        },
-      })
-      // Functionality works need to actually delete
-      .then(function (answer) {
-        const query = "DELETE FROM employee WHERE id = ?";
-        connection.query(query, answer.employee, function (err, results) {
-          if (err) throw err;
-          connection.query("SELECT * FROM employee", (err, res) => {
-            if (err) throw err;
-            console.log("You removed an employee");
-            console.table(res);
-            start();
-          });
-        });
-      });
+    connection.query("SELECT * FROM employee", (err, response) => {
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Please select the employee's job role:",
+            // choices: arrayOfTitles,
+            name: "role_id",
+            choices: function () {
+              const roleArray = [];
+              for (var i = 0; i < data.length; i++) {
+                const roleObject = {
+                  name: `${data[i].title}`,
+                  value: data[i].id,
+                }
+                roleArray.push(roleObject)
+              }
+              return roleArray;
+            }
+          },
+          {
+            type: "list",
+            name: "id",
+            message: "Please select the employee you would like to update?",
+            choices: function () {
+              const employeeArray = [];
+              for (var i = 0; i < response.length; i++) {
+                const employeeObject = {
+                  name: `${response[i].first_name} ${response[i].last_name}`,
+                  value: response[i].id,
+                }
+                employeeArray.push(employeeObject);
+              }
+              return employeeArray;
+            }
+          },
+        ])
+        .then((answer) => {
+          console.log(answer);
+          connection.query("UPDATE employee SET ? WHERE ?;",
+            [
+              {
+                role_id: answer.role_id
+              },
+              {
+                id: answer.id
+              }
+            ],
+            (err) => {
+              if (err) throw err;
+              connection.query(`SELECT employee.first_name, employee.last_name, role.title From 
+                employee LEFT Join role ON employee.role_id = role.id;`, (err, result) => {
+                if (err) throw err;
+                console.table(result);
+                start();
+              });
+            })
+        })
+    });
   });
 };
+
 
 const addRole = () => {
   inquirer
@@ -290,7 +329,7 @@ const addDepartment = () => {
     .prompt([
       {
         type: "input",
-        message: "What is your new department's name",
+        message: "What is your new department's name?",
         name: "department_name",
       },
     ])
