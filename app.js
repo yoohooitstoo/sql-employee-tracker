@@ -65,7 +65,7 @@ function start() {
         "exit",
       ],
     })
-    .then(function ({ action }) {
+    .then(function ({action}) {
       // based on their answer, either call the bid or the post functions
       if (action === "View All Employees") {
         viewEmployees();
