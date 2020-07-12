@@ -95,6 +95,7 @@ function start() {
     });
 }
 
+// Will view the database with all employees
 const viewEmployees = () => {
   const query = `SELECT employee.first_name, employee.last_name, role.title, department.department_name, role.salary, manager.first_name AS manager_first, manager.last_name AS manager_last FROM employee
     LEFT JOIN role ON employee.role_id = role.id
@@ -108,6 +109,7 @@ const viewEmployees = () => {
   });
 };
 
+// Will view the database with all employees by department
 const viewDepartment = () => {
   const query = `SELECT department.id, department.department_name, 
   employee.first_name, employee.last_name, role.title
@@ -122,6 +124,7 @@ const viewDepartment = () => {
   });
 };
 
+// Will view the database with all employees by their manager
 const viewManager = () => {
   const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name, employee.manager_id, manager.first_name AS manager_first, manager.last_name AS manager_last 
     FROM employee 
@@ -136,6 +139,7 @@ const viewManager = () => {
   });
 };
 
+// Will add an employee to the database
 const addEmployee = () => {
   connection.query("SELECT * FROM role", (err, data) => {
     if (err) throw err;
@@ -193,7 +197,7 @@ const addEmployee = () => {
     });
   });
 };
-
+// Will remove an employee to the database
 const removeEmployee = () => {
   connection.query("SELECT * FROM employee", function (err, results) {
     if (err) throw err;
@@ -230,6 +234,7 @@ const removeEmployee = () => {
   });
 };
 
+// Will remove a role to the database
 const removeRole = () => {
   connection.query("SELECT * FROM role", function (err, results) {
     if (err) throw err;
@@ -265,7 +270,7 @@ const removeRole = () => {
       });
   });
 };
-
+// Will remove a department to the database
 const removeDepartment = () => {
   connection.query("SELECT * FROM department", function (err, results) {
     if (err) throw err;
@@ -302,6 +307,7 @@ const removeDepartment = () => {
   });
 };
 
+// Will update a role to the database
 const updateRole = () => {
   connection.query("SELECT * FROM role", (err, data) => {
     if (err) throw err;
@@ -368,6 +374,7 @@ const updateRole = () => {
   });
 };
 
+// Will add a role to the database
 const addRole = () => {
   inquirer
     .prompt([
@@ -390,6 +397,7 @@ const addRole = () => {
     });
 };
 
+// Will add an department to the database
 const addDepartment = () => {
   inquirer
     .prompt([
@@ -412,6 +420,7 @@ const addDepartment = () => {
     });
 };
 
+// Will view roles to the database
 const viewRoles = () => {
   const query =
     "SELECT role.title, role.salary, role.department_id, department.department_name FROM role LEFT JOIN department ON role.department_id = department.id;";
@@ -423,6 +432,7 @@ const viewRoles = () => {
   });
 };
 
+//Will end the prompts and the connection to the database
 const exit = () => {
   console.log("you exited");
   connection.end();
