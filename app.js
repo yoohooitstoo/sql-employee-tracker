@@ -269,7 +269,41 @@ const removeRole = () => {
   });
 };
 
-
+const removeDepartment = () => {
+  connection.query("SELECT * FROM department", function (err, results) {
+    if (err) throw err;
+    inquirer
+      .prompt({
+        name: "department",
+        type: "list",
+        message: "Who would you like to remove?",
+        choices: function () {
+          const choicesArray = [];
+          for (var i = 0; i < results.length; i++) {
+            const departmentObject = {
+              name: `${results[i].department_name}`,
+              value: results[i].id,
+            };
+            choicesArray.push(departmentObject);
+          }
+          return choicesArray;
+        },
+      })
+      // Functionality works need to actually delete
+      .then(function (answer) {
+        const query = "DELETE FROM department WHERE id = ?";
+        connection.query(query, answer.department, function (err, results) {
+          if (err) throw err;
+          connection.query("SELECT * FROM department", (err, res) => {
+            if (err) throw err;
+            console.log("You removed a department");
+            console.table(res);
+            start();
+          });
+        });
+      });
+  });
+};
 
 const updateRole = () => {
   connection.query("SELECT * FROM role", (err, data) => {
@@ -336,7 +370,6 @@ const updateRole = () => {
     });
   });
 };
-
 
 const addRole = () => {
   inquirer
